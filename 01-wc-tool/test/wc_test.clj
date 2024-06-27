@@ -12,4 +12,10 @@
            (wc/main "-l" "resources/test.txt"))))
   )
 
-  )
+(deftest long-options
+  (testing "count bytes"
+    (is (= 342190
+           (wc/main "--bytes" "resources/test.txt"))))
+  (testing "count lines"
+    (is (= 7145
+           (wc/main "--lines" "resources/test.txt")))))
