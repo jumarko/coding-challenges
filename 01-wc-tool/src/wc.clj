@@ -7,11 +7,12 @@
   [{:keys [arguments options]}]
   (when-let [f (io/file (first arguments))]
     (cond
-      (:bytes options) (.length f))))
+      (:bytes options) (.length f)
+      (:lines options) (count (line-seq (io/reader f))))))
 
 (def cli-options
-  [["-c" "--bytes" "Count number of bytes in the file"
-    :default true]])
+  [["-c" "--bytes" "Count number of bytes in a file"]
+   ["-l" "--lines" "Count number of files in a file"]])
 
 ;; https://github.com/clojure/tools.cli
 (defn parse-args [args]
