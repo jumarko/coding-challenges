@@ -26,13 +26,13 @@
   (count (-> f slurp (str/split #"\s+"))))
 
 (defn count-file
-  [{:keys [arguments options]}]
-  (when-let [f (io/file (first arguments))]
-    (cond
-      (:bytes options) (count-bytes f)
-      (:chars options) (count-chars f)
-      (:lines options) (count-lines f)
-      (:words options) (count-words f))))
+  [f options]
+  (cond
+    (empty? options) [(count-lines f) (count-words f) (count-bytes f)]
+    (:bytes options) [(count-bytes f)]
+    (:chars options) [(count-chars f)]
+    (:lines options) [(count-lines f)]
+    (:words options) [(count-words f)]))
 
 (def cli-options
   [["-c" "--bytes" "Count bytes in a file"]
@@ -46,8 +46,11 @@
   (cli/parse-opts args cli-options))
 
 (defn main [& args]
-  (count-file (parse-args args))
-  )
+  (let [{:keys [arguments options] :as _parsed-args} (parse-args args)
+        filename (first arguments)]
+    (when-let [f (io/file filename)]
+      (apply println (conj (count-file f options)
+                           filename)))))
 
 (comment
   (time (main "--lines" "/Users/jumar/workspace/CODESCENE/CODE/codescene/dev/athena/resources/onprem/analysis/durations-with-account-info_2024-06-12.csv"))
