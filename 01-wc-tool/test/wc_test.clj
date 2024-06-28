@@ -14,6 +14,9 @@
   (testing "Step 3: count lines"
     (is (= 58164
            (wc/main "-w" "resources/test.txt"))))
+  (testing "Step 4: count characters"
+    (is (= 339292
+           (wc/main "-m" "resources/test.txt"))))
   )
 
 (deftest long-options
