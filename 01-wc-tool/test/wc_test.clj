@@ -26,6 +26,13 @@
            (do-count {}))))
   )
 
+(deftest count-stdin
+  (testing "prints expected output"
+    ;; This output is maybe not as nice but it makes implementation easier and it's fine for the end user (easy to read)
+    (is (= "4 \n" (binding [*in* (java.io.StringReader. "anything \n with \n new \n lines and some words")]
+                    (with-out-str (wc/main "-l")))))))
+
+
 (deftest invoke-main-options
   (testing "prints expected output"
     (is (= "342190 resources/test.txt\n" (with-out-str (wc/main "-c" "resources/test.txt")))))

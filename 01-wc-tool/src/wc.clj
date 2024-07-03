@@ -34,6 +34,7 @@
     (:lines options) [(count-lines f)]
     (:words options) [(count-words f)]))
 
+
 (def cli-options
   [["-c" "--bytes" "Count bytes in a file"]
    ["-m" "--chars" "Count characters in a file"]
@@ -48,9 +49,11 @@
 (defn main [& args]
   (let [{:keys [arguments options] :as _parsed-args} (parse-args args)
         filename (first arguments)]
-    (when-let [f (io/file filename)]
+    (when-let [f (or (io/file filename)
+                     *in*)]
       (apply println (conj (count-file f options)
-                           filename)))))
+                           ;; if reading from stdin, we don't want to print 'nil'
+                           (or filename ""))))))
 
 (comment
   (time (main "--lines" "/Users/jumar/workspace/CODESCENE/CODE/codescene/dev/athena/resources/onprem/analysis/durations-with-account-info_2024-06-12.csv"))
